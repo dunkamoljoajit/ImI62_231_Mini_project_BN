@@ -200,12 +200,17 @@ app.get('/api/healths/', (req, res) => {
 });
 
 app.get('/get-caregivers', (req, res) => {
-  const query = 'SELECT id,username,name  FROM caregiver';
+  const query = 'SELECT id, username, name FROM caregiver';
+  
   db.query(query, (err, results) => {
-    if (err) throw err;
-    res.json(results); // ส่งข้อมูลรหัสผู้ดูแลกลับไปที่ฝั่ง Client
+    if (err) {
+      console.error("Database Error:", err);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+    res.json(results);
   });
 });
+
 
 
 
