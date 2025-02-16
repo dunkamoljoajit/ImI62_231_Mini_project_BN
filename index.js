@@ -202,7 +202,7 @@ app.get('/api/healths/', (req, res) => {
 
 
 
-app.get('/get-caregivers', (req, res) => {
+app.get('/getcaregivers', (req, res) => {
   const query = 'SELECT id, username, name FROM caregiver';
   
   db.query(query, (err, results) => {
@@ -213,6 +213,7 @@ app.get('/get-caregivers', (req, res) => {
     res.json(results);
   });
 });
+
 
 
 
