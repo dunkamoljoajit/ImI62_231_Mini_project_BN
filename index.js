@@ -200,7 +200,7 @@ app.get('/api/healths/', (req, res) => {
 });
 
 app.get('/get-caregivers', (req, res) => {
-  const query = 'SELECT caregiver_id, caregiver_name FROM caregivers';
+  const query = 'SELECT id,username,name  FROM caregiver';
   db.query(query, (err, results) => {
     if (err) throw err;
     res.json(results); // ส่งข้อมูลรหัสผู้ดูแลกลับไปที่ฝั่ง Client
