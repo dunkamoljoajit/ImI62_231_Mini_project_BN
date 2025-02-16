@@ -199,7 +199,17 @@ app.get('/api/healths/', (req, res) => {
         res.status(200).json(results);
     });
 });
+app.get('/api/caregivers', (req, res) => {
+    const query = 'SELECT * FROM caregiver';
 
+    connection.execute(query, (err, results) => {
+        if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).json({ message: `Error retrieving caregivers: ${err.message}` });
+        }
+        res.status(200).json(results);
+    });
+});
 
 
 
