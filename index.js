@@ -205,7 +205,7 @@ app.get('/api/healths/', (req, res) => {
 app.get('/getcaregivers', (req, res) => {
   const query = 'SELECT id, username, name FROM caregiver';
   
-  db.query(query, (err, results) => {
+  connection.execute(query, (err, results) => {  // ใช้ connection.execute แทน db.query
     if (err) {
       console.error("Database Error:", err);
       return res.status(500).json({ error: "Internal Server Error" });
