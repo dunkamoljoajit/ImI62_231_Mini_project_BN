@@ -190,14 +190,17 @@ app.get('/api/health/:elderly_id', (req, res) => {
 // Get health data
 app.get('/api/healths/', (req, res) => {
     const query = 'SELECT * FROM health_data';
+    
     connection.execute(query, (err, results) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ message: 'Error retrieving health data' });
+            console.error("Database Error:", err);
+            return res.status(500).json({ message: `Error retrieving health data: ${err.message}` });
         }
-        res.status(200).json({ health_data: results });
+        res.status(200).json(results);
     });
 });
+
+
 
 app.get('/get-caregivers', (req, res) => {
   const query = 'SELECT id, username, name FROM caregiver';
