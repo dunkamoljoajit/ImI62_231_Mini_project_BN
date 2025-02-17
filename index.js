@@ -211,7 +211,17 @@ app.get('/api/caregivers', (req, res) => {
     });
 });
 
+app.get('/api/elderlys', (req, res) => {
+    const query = 'SELECT * FROM elderly';
 
+    connection.execute(query, (err, results) => {
+        if (err) {
+            console.error("Database Error:", err);
+            return res.status(500).json({ message: `Error retrieving elderly: ${err.message}` });
+        }
+        res.status(200).json(results);
+    });
+});
 
 
 
