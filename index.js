@@ -133,26 +133,36 @@ app.post('/api/health', urlencodedParser, (req, res) => {
 });
 
 // Update health data for an elderly
-app.put('/api/health/:elderly_id', urlencodedParser, (req, res) => {
-    const elderly_id = req.params.elderly_id;
+app.put('/api/health/:id', urlencodedParser, (req, res) => {
+    const id = req.params.id;
     const { heart_rate, blood_pressure, temperature } = req.body;
 
     if (!heart_rate || !blood_pressure || !temperature) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE elderly_id = ?`;
-    connection.execute(query, [heart_rate, blood_pressure, temperature, elderly_id], (err, results) => {
+    const checkQuery = `SELECT * FROM health_data WHERE id = ?`;
+    connection.execute(checkQuery, [id], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).json({ message: "Error updating health data" });
+            return res.status(500).json({ message: "Database error" });
         }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ message: "Elderly not found" });
+        if (results.length === 0) {
+            return res.status(404).json({ message: "Health record not found" });
         }
-        res.status(200).json({ message: "Health data updated successfully" });
+
+        // อัปเดตข้อมูลเฉพาะ ID ที่ต้องการ
+        const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE id = ?`;
+        connection.execute(query, [heart_rate, blood_pressure, temperature, id], (err, updateResults) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).json({ message: "Error updating health data" });
+            }
+            res.status(200).json({ message: "Health data updated successfully" });
+        });
     });
 });
+
 
 // Delete health data for an elderly
 app.delete('/api/health/:elderly_id', (req, res) => {
