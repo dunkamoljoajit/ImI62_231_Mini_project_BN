@@ -141,10 +141,11 @@ app.put('/api/health/:elderly_id', urlencodedParser, (req, res) => {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    const query = UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE elderly_id = ?;
+    const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE elderly_id = ?`;
+
     connection.execute(query, [heart_rate, blood_pressure, temperature, elderly_id], (err, results) => {
         if (err) {
-            console.error(err);
+            console.error("Database error:", err);
             return res.status(500).json({ message: "Error updating health data" });
         }
         if (results.affectedRows === 0) {
@@ -153,6 +154,7 @@ app.put('/api/health/:elderly_id', urlencodedParser, (req, res) => {
         res.status(200).json({ message: "Health data updated successfully" });
     });
 });
+
 
 // Delete health data for an elderly
 app.delete('/api/health/:elderly_id', (req, res) => {
