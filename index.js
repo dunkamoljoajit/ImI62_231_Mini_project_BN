@@ -158,20 +158,22 @@ app.put('/api/health/:id', urlencodedParser, (req, res) => {
 
 // Delete health data for an elderly
 app.delete('/api/health/:id', (req, res) => {
-    const id = req.params.id;
+    const id = parseInt(req.params.id, 10);
+    console.log("Deleting ID:", id); // ตรวจสอบค่า ID ก่อนลบ
 
-    const query = `DELETE FROM health_data WHERE _id = ?`;
+    const query = `DELETE FROM health_data WHERE id = ?`;
     connection.execute(query, [id], (err, results) => {
         if (err) {
-            console.error(err);
-            return res.status(500).json({ message: "Error deleting health data", error: err});
+            console.error("Database Error:", err);
+            return res.status(500).json({ message: "Error deleting health data", error: err });
         }
         if (results.affectedRows === 0) {
-            return res.status(404).json({ message: "Elderly not found" });
+            return res.status(404).json({ message: "No record found to delete" });
         }
-        res.status(200).json({ message: "Health data deleted successfully" });
+        res.json({ message: "Record deleted successfully" });
     });
 });
+
 
 // Get health data for a specific elderly
 app.get('/api/health/:elderly_id', (req, res) => {
