@@ -143,16 +143,13 @@ app.put('/api/health/:id', urlencodedParser, (req, res) => {
 
     const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE _id = ?`;
 
-    connection.execute(query, [heart_rate, blood_pressure, temperature, id], (err, results) => {
-        if (err) {
-            console.error("Database error:", err);
-            return res.status(500).json({ message: "Error updating health data" });
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ message: "Elderly not found" });
-        }
-        res.status(200).json({ message: "Health data updated successfully" });
-    });
+    connection.execute(query, [id], (err, results) => {
+    if (err) {
+        console.error("Database Error:", err);
+        return res.status(500).json({ message: "Error deleting health data", error: err });
+    }
+});
+
 });
 
 // Delete health data for an elderly
