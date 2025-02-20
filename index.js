@@ -154,7 +154,7 @@ app.put('/api/health/:elder_id', urlencodedParser, async (req, res) => {
         return res.status(400).json({ message: "Invalid temperature range" });
     }
 
-    const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE id = ?`;
+    const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE elder_id = ?`;
 
     try {
         const [results] = await connection.execute(query, [heart_rate, blood_pressure, temperature, elderly_id]);
