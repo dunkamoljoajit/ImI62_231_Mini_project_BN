@@ -145,9 +145,13 @@ app.put('/api/health/:id', urlencodedParser, (req, res) => {
 
     connection.execute(query, [id], (err, results) => {
     if (err) {
-        console.error("Database Error:", err);
-        return res.status(500).json({ message: "Error deleting health data", error: err });
-    }
+            console.error(err);
+            return res.status(500).json({ message: "Error updating health data", error: err});
+        }
+    if (results.affectedRows === 0) {
+            return res.status(404).json({ message: "Elderly not found" });
+        }
+    res.status(200).json({ message: "Health data updating successfully" });
 });
 
 });
@@ -160,7 +164,7 @@ app.delete('/api/health/:id', (req, res) => {
     connection.execute(query, [id], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).json({ message: "Error deleting health data" });
+            return res.status(500).json({ message: "Error deleting health data", error: err});
         }
         if (results.affectedRows === 0) {
             return res.status(404).json({ message: "Elderly not found" });
