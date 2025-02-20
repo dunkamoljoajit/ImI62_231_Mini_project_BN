@@ -133,20 +133,34 @@ app.post('/api/health', urlencodedParser, (req, res) => {
 });
 
 // Update health data for an elderly
-app.put('/api/health/:elderly_id', urlencodedParser, (req, res) => {
-    const elderly_id = req.params.elderly_id;
+app.put('/api/health/:id', urlencodedParser, (req, res) => {
+    const elderly_id = req.params.id;
     const { heart_rate, blood_pressure, temperature } = req.body;
 
+    // ตรวจสอบค่าที่รับเข้ามา
     if (!heart_rate || !blood_pressure || !temperature) {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE elderly_id = ?`;
+    if (isNaN(heart_rate) || heart_rate < 30 || heart_rate > 200) {
+        return res.status(400).json({ message: "Invalid heart rate" });
+    }
+
+    const bloodPressureRegex = /^\d{2,3}\/\d{2,3}$/;
+    if (!bloodPressureRegex.test(blood_pressure)) {
+        return res.status(400).json({ message: "Invalid blood pressure format (e.g., 120/80)" });
+    }
+
+    if (isNaN(temperature) || temperature < 34.0 || temperature > 42.0) {
+        return res.status(400).json({ message: "Invalid temperature range" });
+    }
+
+    const query = `UPDATE health_data SET heart_rate = ?, blood_pressure = ?, temperature = ? WHERE id = ?`;
 
     connection.execute(query, [heart_rate, blood_pressure, temperature, elderly_id], (err, results) => {
         if (err) {
             console.error(err);
-            return res.status(500).json({ message: "Error updating health data", error: err });
+            return res.status(500).json({ message: "Error updating health data", error: err.message });
         }
         if (results.affectedRows === 0) {
             return res.status(404).json({ message: "Elderly not found" });
@@ -154,6 +168,7 @@ app.put('/api/health/:elderly_id', urlencodedParser, (req, res) => {
         res.status(200).json({ message: "Health data updated successfully" });
     });
 });
+
 
 
 // Delete health data for an elderly
