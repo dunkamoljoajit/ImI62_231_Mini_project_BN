@@ -57,7 +57,7 @@ app.get('/', (req, res) => {
             { "api_name": "/api/register", "method": "POST" },
             { "api_name": "/api/health", "method": "POST" },
             { "api_name": "/api/health/:elderly_id", "method": "PUT" },
-            { "api_name": "/api/health/:elderly_id", "method": "DELETE" },
+            { "api_name": "/api/health/:id", "method": "DELETE" },
             { "api_name": "/api/health/:elderly_id", "method": "GET" },
             { "api_name": "/api/health/", "method": "GET" }
         ]
